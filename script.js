@@ -1,7 +1,7 @@
 // ==========================================
 // 1. REGISTER PLUGINS
 // ==========================================
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother, TextPlugin);
 
 // ==========================================
 // 2. SCROLLSMOOTHER SETUP (Global)
@@ -22,9 +22,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault(); // Default jhatke wala jump band karein
         const targetId = this.getAttribute('href');
-        
+
         // ScrollSmoother ka apna function use karke target tak slide karein
-        smoother.scrollTo(targetId, true, "top top"); 
+        smoother.scrollTo(targetId, true, "top top");
     });
 });
 
@@ -32,6 +32,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // 4. MAIN SECTIONS ANIMATIONS (Loop)
 // ==========================================
 const sections = gsap.utils.toArray('.section');
+const bodyAndWrapper = "body, #smooth-wrapper";
+const globalTextElements = ".logo, .subtitle, .global-contact span";
+
 
 sections.forEach((section, i) => {
     // Current section colors
@@ -42,38 +45,41 @@ sections.forEach((section, i) => {
     const prevBgColor = i > 0 ? sections[i - 1].getAttribute('data-bg-color') : '#121212';
     const prevTextColor = i > 0 ? sections[i - 1].getAttribute('data-text-color') : '#ffffff';
 
-    // 1. BACKGROUND TRANSITION (Fixed for Reverse Scroll & ScrollSmoother Wrapper)
-    // NAYA: "body" aur "#smooth-wrapper" dono ka color change karega taaki kuch chhupe nahi
-    gsap.fromTo("body, #smooth-wrapper", 
-        { backgroundColor: prevBgColor }, 
+    // 1. BACKGROUND TRANSITION
+    gsap.fromTo(bodyAndWrapper,
+        { backgroundColor: prevBgColor },
         {
             backgroundColor: bgColor,
             immediateRender: false,
-            ease: "none",
-            scrollTrigger: {
-                trigger: section,
-                start: "top bottom", 
-                end: "center center", 
-                scrub: 1 
-            }
-        }
-    );
-
-    // 2. GLOBAL TEXT COLOR TRANSITION
-    gsap.fromTo(".logo, .subtitle, .global-contact span", 
-        { color: prevTextColor }, 
-        {
-            color: textColor,
-            immediateRender: false,
-            ease: "none",
+            ease: "power1.inOut",
             scrollTrigger: {
                 trigger: section,
                 start: "top bottom",
                 end: "center center",
-                scrub: 1
+                scrub: 0.8
             }
         }
     );
+
+
+
+    // 2. GLOBAL TEXT COLOR TRANSITION
+    gsap.fromTo(globalTextElements,
+        { color: prevTextColor },
+        {
+            color: textColor,
+            immediateRender: false,
+            ease: "power1.inOut",
+            scrollTrigger: {
+                trigger: section,
+                start: "top bottom",
+                end: "center center",
+                scrub: 0.5
+            }
+        }
+    );
+
+
 
     // 3. SPECIFIC PROJECT TEXT COLORS 
     gsap.to(section.querySelectorAll(".project-num, .project-title, .project-desc, .see-live"), {
@@ -89,8 +95,8 @@ sections.forEach((section, i) => {
     const movingPattern = section.querySelector(".moving-pattern");
     if (movingPattern) {
         gsap.to(movingPattern, {
-            xPercent: 10, 
-            yPercent: 10, 
+            xPercent: 10,
+            yPercent: 10,
             ease: "sine.inOut",
             repeat: -1, // Infinite loop
             yoyo: true, // Pan back and forth smoothly
@@ -103,36 +109,36 @@ sections.forEach((section, i) => {
     const square = section.querySelector(".project-square");
     const details = section.querySelector(".project-details");
     const patternShape = section.querySelector(".project-pattern");
-    
+
     const innerPattern = patternShape ? patternShape.querySelector(".moving-pattern") : null;
 
     if (projectFlex && square && details && innerPattern) {
-        
+
         section.addEventListener("mousemove", (e) => {
             const rect = section.getBoundingClientRect();
-            
+
             const xNorm = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
             const yNorm = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
 
             gsap.to(square, {
-                rotationY: xNorm * 10,   
-                rotationX: -yNorm * 10,  
-                x: xNorm * 20,           
+                rotationY: xNorm * 10,
+                rotationX: -yNorm * 10,
+                x: xNorm * 20,
                 y: yNorm * 20,
-                transformPerspective: 1000, 
-                ease: "power2.out",      
+                transformPerspective: 1000,
+                ease: "power2.out",
                 duration: 0.5
             });
 
             gsap.to(details, {
-                x: -xNorm * 30,          
+                x: -xNorm * 30,
                 y: -yNorm * 30,
                 ease: "power2.out",
                 duration: 0.5
             });
 
             gsap.to(innerPattern, {
-                x: -xNorm * 50,          
+                x: -xNorm * 50,
                 y: -yNorm * 50,
                 ease: "power2.out",
                 duration: 0.5
@@ -145,24 +151,66 @@ sections.forEach((section, i) => {
                 rotationX: 0,
                 x: 0,
                 y: 0,
-                ease: "power3.out", 
+                ease: "power3.out",
                 duration: 0.8
             });
         });
     }
 
-    // 6. SCROLL FADE-UP REVEAL
-    gsap.from(section.querySelectorAll(".project-square, .project-details, .project-pattern"), {
-        y: 80,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.1,
+    // 6. SCROLL PARALLAX (3D Depth while scrolling)
+    gsap.to(square, {
+        y: -40,
+        rotationX: -8,
+        rotationY: 2,
+        ease: "power2.out",
         scrollTrigger: {
             trigger: section,
-            start: "top 75%",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1 // Slightly more lag for "heavy" 3D elements feels smoother
+        }
+    });
+
+    gsap.to(details, {
+        y: 60,
+        ease: "power2.out",
+        scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+        }
+    });
+
+    if (patternShape) {
+        gsap.to(patternShape, {
+            y: -100,
+            rotation: 15,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: section,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1.2 // Background elements move with more "weight"
+            }
+        });
+    }
+
+
+    // 7. SCROLL FADE-UP REVEAL (Initial Entrance)
+    gsap.from([square, details, patternShape].filter(el => el), {
+        y: 100,
+        opacity: 0,
+        duration: 1.5,
+        ease: "power4.out",
+        stagger: 0.2,
+        scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
             toggleActions: "play none none reverse"
         }
     });
+
 
     // 7. DYNAMIC SIDEBAR HIGHLIGHTING
     const numbersSidebar = document.querySelector('.numbers-sidebar');
@@ -170,10 +218,10 @@ sections.forEach((section, i) => {
 
     ScrollTrigger.create({
         trigger: section,
-        start: "top center", 
+        start: "top center",
         end: "bottom center",
         onEnter: () => updateSidebar(i),
-        onEnterBack: () => updateSidebar(i) 
+        onEnterBack: () => updateSidebar(i)
     });
 
     function updateSidebar(index) {
@@ -182,7 +230,7 @@ sections.forEach((section, i) => {
         } else {
             numbersSidebar.style.opacity = "1";
             navNumbers.forEach(num => num.classList.remove('active'));
-            
+
             if (navNumbers[index - 1]) {
                 navNumbers[index - 1].classList.add('active');
             }
@@ -196,14 +244,14 @@ sections.forEach((section, i) => {
 function toggleOtherField() {
     const selectBox = document.getElementById("bizTypeSelect");
     const otherInput = document.getElementById("otherBizInput");
-    
+
     if (selectBox.value === "other") {
         otherInput.style.display = "block";
         otherInput.setAttribute("required", "true");
     } else {
         otherInput.style.display = "none";
         otherInput.removeAttribute("required");
-        otherInput.value = ""; 
+        otherInput.value = "";
     }
 }
 
@@ -220,7 +268,7 @@ glowSections.forEach(section => {
 
         // Glow permanently ON
         section.style.setProperty('--glow-active', '1');
-        
+
         section.style.setProperty('--mouse-x', `${x}px`);
         section.style.setProperty('--mouse-y', `${y}px`);
     });
@@ -236,7 +284,7 @@ const closeModalBtn = document.querySelector('.modal-close-btn');
 if (dummyForm && contactModal) {
     // 1. Dummy form ke kisi bhi hisse par click karne se Modal khulega
     dummyForm.addEventListener('click', (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         contactModal.classList.add('active');
     });
 
@@ -266,3 +314,17 @@ window.addEventListener("load", () => {
         }, 200);
     }
 });
+
+// ==========================================
+// 8. HERO TYPEWRITER ANIMATION
+// ==========================================
+const typeTl = gsap.timeline();
+
+// Cursor blinking
+gsap.to(".typewriter-cursor", { opacity: 0, ease: "power2.inOut", repeat: -1, yoyo: true, duration: 0.5 });
+
+// Typewriter sequence: "DRIVE TRAFFIC, LEADS & SALES"
+typeTl.to("#typewriter-text", { duration: 0, text: "DRIVE ", ease: "none", delay: 0.5 })
+    .to("#typewriter-text", { duration: 0.9, text: "DRIVE TRAFFIC,", ease: "none", delay: 0.2 })
+    .to("#typewriter-text", { duration: 0.9, text: "DRIVE TRAFFIC, LEADS", ease: "none", delay: 0.4 })
+    .to("#typewriter-text", { duration: 0.9, text: "DRIVE TRAFFIC, LEADS & SALES", ease: "none", delay: 0.4 });
