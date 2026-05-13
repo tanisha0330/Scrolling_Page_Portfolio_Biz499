@@ -790,7 +790,7 @@ h1 .highlight {
     .section {
         height: auto !important; /* 100vh ki jagah auto taaki lamba content sama sake */
         min-height: 100vh !important;
-        padding: 120px 0 60px 0 !important; /* Upar se 120px padding taaki header ke peeche text na chhupe */
+        padding: 12px 0 60px 0 !important; /* Upar se 120px padding taaki header ke peeche text na chhupe */
     }
 
     /* 4. HERO SECTION ADJUSTMENTS */
