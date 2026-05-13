@@ -1,0 +1,928 @@
+/* --- NOISE OVERLAY FOR GRAIN EFFECT --- */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.4; 
+    mix-blend-mode: overlay; /* Ensures noise shows on dark and light colors */
+    z-index: 9999;
+    pointer-events: none; /* Clicks pass through */
+}
+
+/* --- GLOBAL SETUP --- */
+
+
+
+/* --- GLOBAL STYLES & RESET --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+/* Typography Customization */
+h1, h2, .logo, .eyebrow, .project-num {
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+}
+
+/* Fixed Elements Position and Color */
+.global-header {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 100;
+}
+
+
+/* --- CUSTOM DYNAMIC LOGO --- */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Icon aur text ke beech ka space */
+    color: inherit; /* MAGIC PROPERTY: Ye GSAP se color inherit karega */
+}
+
+.logo-icon {
+    height: 35px; /* Logo icon ka size */
+    width: 35px;
+    /* stroke="currentColor" pehle hi HTML me diya hua hai, 
+       toh ye icon hamesha text ke color jaisa hi rahega */
+}
+
+/* --- UPDATED LOGO IMAGE STYLES --- */
+.logo {
+    display: flex;
+    align-items: center;      /* Vertically centers the image and text */
+    justify-content: center;
+    gap: 10px;                /* Perfect spacing between the image and the text */
+    color: inherit;           /* Allows the GSAP color transition to still affect the text */
+}
+
+.logo-image {
+    height: 40px;             /* Constrains the image size. Adjust this up or down as needed! */
+    width: auto;              /* Maintains the original aspect ratio so it doesn't stretch */
+    object-fit: contain;      /* Ensures the whole logo fits nicely */
+    display: block;           /* Removes the weird extra space below inline images */
+}
+
+.logo-text {
+    font-size: 2.2rem;
+    font-family: 'Inter', sans-serif; 
+    font-weight: 600;
+    letter-spacing: -1px; 
+    margin-bottom: 2px;       /* Tiny optical adjustment to align perfectly with the image */
+}
+
+
+
+.global-sidebar {
+    position: fixed; /* Ensures it never scrolls away */
+    left: 30px;
+    top: 50%; /* Vertically centers it */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+.global-contact {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+}
+
+.global-contact span {
+    display: block;
+    transform: rotate(90deg);
+    transform-origin: center right;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+}
+
+/* --- SCROLL CONTAINER & SECTIONS --- */
+.scroll-container {
+    height: auto;
+}
+
+.section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+.hero-content {
+    max-width: 900px;
+}
+
+.eyebrow {
+    font-size: 1rem;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 40px;
+}
+
+h1 .highlight {
+    font-size: 4.5rem;
+    letter-spacing: 5px;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 50px;
+}
+
+.selected-works {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Project Sidebar Numbers */
+.numbers-sidebar span {
+    transform: rotate(-90deg);
+    opacity: 0.3;
+    transition: opacity 0.3s ease, font-weight 0.3s ease;
+}
+
+.numbers-sidebar span.active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* --- UPDATED PROJECT FLEXBOX LAYOUT (Side-by-Side) --- */
+.project-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers everything */
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    gap: 60px; /* Space between image, text, and triangle */
+}
+
+/* Square Graphic Container */
+.project-square {
+    width: 350px;
+    height: 350px;
+    flex-shrink: 0; 
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
+    border-radius: 4px;
+    background-color: var(--square-bg); 
+    z-index:10000;
+}
+
+.project-square img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    mix-blend-mode: luminosity; 
+}
+
+/* Adjustments for placeholders */
+.ollie-graphic img {
+    width: 120%;
+    object-fit: cover;
+    margin-left: -10%;
+}
+
+/* Details Section */
+.project-details {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.project-num {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.project-title {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.project-desc {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 40px;
+}
+
+.see-live {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    line-height: 1.8;
+}
+
+/* --- TRIANGLE WITH MOVING PATTERN --- */
+/* --- ALTERNATING LAYOUT CLASS --- */
+.project-flex.layout-reverse {
+    flex-direction: row-reverse; /* Ye image aur pattern ki jagah aapas me badal dega */
+}
+
+/* --- PATTERN CONTAINER BASE (Hole Effect) --- */
+.project-pattern {
+    width: 280px;
+    height: 280px;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+    
+    /* MAGIC EFFECT: Ye background color ko pattern ke upar dikhayega */
+    opacity: 0.4; /* Transparency */
+    mix-blend-mode: luminosity; /* Pattern ko background color ke saath blend kar dega */
+    z-index: 0;
+}
+
+.project-pattern .moving-pattern {
+    width: 150%;
+    height: 150%;
+    object-fit: cover;
+    position: absolute;
+    top: -25%; 
+    left: -25%;
+}
+
+/* --- 7 DIFFERENT SHAPES --- */
+/* 1. Circle */
+.shape-circle { clip-path: circle(50% at 50% 50%); }
+
+/* 2. Oval */
+.shape-oval { clip-path: ellipse(40% 50% at 50% 50%); }
+
+/* 3. Triangle Upside (Normal) */
+.shape-triangle-up { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+
+/* 4. Triangle Upside Down */
+.shape-triangle-down { clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
+
+/* 5. Rhombus (Diamond) */
+.shape-rhombus { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+
+/* 6. Pentagon */
+.shape-pentagon { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+
+/* 7. Hexagon */
+.shape-hexagon { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+
+.triangle-pattern-container {
+    background-color: var(--triangle-bg); 
+    opacity: 0.01;
+}
+
+.moving-pattern {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    position: absolute;
+    top: -25px; 
+    left: -25px;
+}
+
+
+
+/* =========================================
+   NEW SECTION: SKILLS & CLIENTS
+========================================= */
+.skills-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+.tiny-heading {
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 30px;
+}
+
+.logos-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    opacity: 0.6;
+    font-size: 1.2rem;
+}
+
+.skills-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.skills-cloud .cross {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 1rem;
+    margin: 0 10px;
+}
+
+/* =========================================
+   NEW SECTION: FINAL CONTACT & FORM
+========================================= */
+.contact-flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    gap: 60px;
+}
+
+/* Left Panel: Form */
+.contact-form-panel {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 40px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.premium-form .form-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.premium-form label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.premium-form input,
+.premium-form select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    padding: 10px 0;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.premium-form input:focus,
+.premium-form select:focus {
+    border-bottom-color: #ffffff;
+}
+
+.premium-form select option {
+    background-color: #121212; /* Dark bg for dropdown items */
+    color: #fff;
+}
+
+.hidden-input {
+    display: none; /* Hidden by default */
+}
+.mt-3 { margin-top: 15px; }
+
+.submit-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 15px 30px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    transition: transform 0.2s ease;
+}
+.submit-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Right Panel: Info */
+.contact-details-panel {
+    flex: 1;
+    padding-left: 40px;
+}
+
+.availability-tag {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #d1b87a; /* Subtle gold/yellow from image */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #d1b87a;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #d1b87a;
+}
+
+.contact-huge-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 50px;
+    margin-top: 60px;
+}
+
+.contact-info-block {
+    margin-bottom: 10px;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.info-value {
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+}
+
+
+/* --- NEW SECTION: MAC BROWSER MOCKUP --- */
+
+/* --- MAC BROWSER MOCKUP --- */
+       
+
+        /* Browser Top Bar */
+        .browser-header {
+            background-color: #e4e4e4;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+        }
+
+        /* Mac OS Window Buttons */
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
+
+        /* --- MAIN CONTENT CONTAINER --- */
+        .project-detail-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px; /* Text aur mockup dono ko 1000px par lock karega */
+            margin: 0 auto;
+            padding: 120px 20px 100px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+      
+
+        /* The Images Inside */
+        .browser-content img {
+            width: 1000px;
+            height: auto; /* MAGIC PROPERTY: Ye height ko width ke hisaab se apne aap adjust karta hai */
+            display: block; 
+        }
+
+
+
+/* =========================================
+   SPOTLIGHT GLOW EFFECT (Hero & Contact)
+========================================= */
+
+.glow-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.glow-effect::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        rgba(255, 255, 255, 0.06), 
+        transparent 40%
+    );
+    pointer-events: none; 
+    z-index: 1; 
+    
+    /* Pehle opacity 0 thi, ab ye JS variable par depend karegi */
+    opacity: var(--glow-active, 0); 
+    transition: opacity 0.5s ease; 
+}
+
+
+
+/* Ensure content aur forms glow ke upar ekdum clear dikhein */
+.hero-content, 
+.awards-sidebar, 
+.contact-flex-container {
+    position: relative;
+    z-index: 10; 
+}
+
+
+/* 1. Hero section ka relative hona zaroori hai */
+.section.hero {
+    position: relative; 
+    width: 100%;
+    /* Baaki hero properties waise hi rahengi */
+}
+
+/* 2. Awards Sidebar ko ekdum Left me pin karna */
+.left-sidebar.awards-sidebar {
+    position: absolute !important; /* Ye isko main text ke flow se bahar nikal dega */
+    left: 30px !important; /* Page ke extreme left se 30px ka gap */
+    top: 50% !important; /* Vertically center ke liye */
+    transform: translateY(-50%) !important; /* Perfect vertical balance */
+    
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Awards ke beech ka gap */
+    z-index: 100; /* Sabse upar dikhane ke liye */
+}
+
+/* 3. Awards ka text tilt karne ke liye */
+.awards-sidebar .award {
+    transform: rotate(-30deg);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    white-space: nowrap; /* Text ko next line me tutne se rokta hai */
+}
+
+/* =========================================
+   POPUP MODAL STYLES (WITH 3D ROTATION)
+========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: rgba(10, 10, 10, 0.85); 
+    backdrop-filter: blur(8px); 
+    z-index: 99999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* NAYA: 3D effect ke liye perspective add kiya */
+    perspective: 1200px; 
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal ke andar ka dabba (Initial State) */
+.modal-content {
+    background: #111111;
+    padding: 50px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    
+    /* NAYA: 3D Rotation aur Scaling Animation */
+    opacity: 0;
+    /* Shuru me chota rahega (0.8), niche hoga (40px) aur peeche ki taraf tilted hoga (-20deg) */
+    transform: scale(0.8) translateY(40px) rotateX(-20deg) rotateY(10deg);
+    
+    /* Premium silky smooth easing curve lagaya hai */
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+}
+
+/* Jab modal open ho jaye (Final State) */
+.modal-overlay.active .modal-content {
+    opacity: 1;
+    /* Ghoom kar ekdum flat aur original size (1) me aa jayega */
+    transform: scale(1) translateY(0) rotateX(0) rotateY(0);
+}
+
+/* Close Button Animation */
+.modal-close-btn {
+    position: absolute;
+    top: 20px; right: 25px;
+    background: none; border: none;
+    color: #ffffff; font-size: 2rem;
+    cursor: pointer; opacity: 0.5;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    opacity: 1;
+    /* Hover karne par close button thoda rotate hoga */
+    transform: rotate(90deg); 
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+
+
+
+/* Container ko align karne ke liye */
+.awards-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Heading aur image dono center honge */
+    justify-content: center;
+    padding: 60px 0; /* Upar neeche se thoda space */
+    text-align: center;
+}
+
+/* Heading ki styling (Playfair Display touch ke liye) */
+.tiny-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    opacity: 0.6;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+/* Image ko properly display aur short karne ke liye */
+.awards-logos {
+    width: 100%;
+    max-width: 800px; /* Isse image ki width short rahegi (image_549c3b.png ki tarah) */
+    height: auto; /* Aspect ratio maintain rahega */
+    object-fit: contain; /* Puri image dabba ke andar fit hogi */
+    opacity: 0.7; /* Thoda subtle look ke liye */
+    transition: opacity 0.3s ease;
+    filter: grayscale(100%) brightness(1.5); /* Logos ko ek jaisa aur white tone dene ke liye */
+}
+
+.awards-logos:hover {
+    opacity: 1;
+}
+
+
+
+/* =========================================
+   📱 MOBILE RESPONSIVE STYLES (Max-width: 768px)
+========================================= */
+@media screen and (max-width: 768px) {
+    
+    /* 1. HIDE UNWANTED FIXED ELEMENTS ON MOBILE */
+    .left-sidebar,
+    .global-sidebar,
+    .global-contact {
+        display: none !important;
+    }
+
+    /* 2. HEADER ADJUSTMENTS (Clutter fix & Dynamic Background) */
+    .global-header {
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        padding: 15px 0 !important;
+        /* MAGIC: Ye line automatically current section ka color inherit kar legi */
+        background-color: inherit !important; 
+        z-index: 9999 !important;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15); /* Header ko alag dikhane ke liye halki shadow */
+    }
+    
+    /* Header items ko center karna */
+    .global-header .logo {
+        justify-content: center;
+    }
+    .logo-text {
+        font-size: 1.6rem !important;
+    }
+    .logo-image {
+        height: 30px !important;
+    }
+
+    /* 3. FIX SECTION HEIGHT (Submit Button cut-off fix) */
+    .section {
+        height: auto !important; /* 100vh ki jagah auto taaki lamba content sama sake */
+        min-height: 100vh !important;
+        padding: 120px 0 60px 0 !important; /* Upar se 120px padding taaki header ke peeche text na chhupe */
+    }
+
+    /* 4. HERO SECTION ADJUSTMENTS */
+    .hero-content {
+        padding: 0 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h1 {
+        font-size: 2.2rem !important;
+        margin-bottom: 20px !important;
+    }
+    h1 .highlight {
+        font-size: 2.5rem !important;
+        letter-spacing: 2px !important;
+    }
+    .description {
+        font-size: 0.95rem !important;
+        margin-bottom: 35px !important;
+    }
+
+    /* 5. PROJECTS LAYOUT (PHOTO UP, TEXT BELOW, SHAPE BEHIND) */
+    .project-flex,
+    .project-flex.layout-reverse {
+        flex-direction: column !important; 
+        gap: 30px !important;
+        padding: 0 20px;
+        position: relative; 
+        text-align: center;
+    }
+
+    /* Make Photo Responsive */
+    .project-square {
+        width: 100% !important;
+        max-width: 300px !important;
+        height: 300px !important;
+        margin: 0 auto;
+    }
+
+    /* Keep Shape Behind the Content */
+    .project-pattern {
+        position: absolute !important;
+        top: 50px !important; 
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: -1 !important; 
+        opacity: 0.25 !important; 
+        width: 250px !important;
+        height: 250px !important;
+    }
+
+    /* Center Project Text */
+    .project-details {
+        max-width: 100% !important;
+        align-items: center;
+    }
+    .project-title {
+        font-size: 2.8rem !important;
+        margin-bottom: 10px !important;
+    }
+    .project-desc {
+        font-size: 0.95rem !important;
+        margin-bottom: 25px !important;
+        padding: 0 10px;
+    }
+
+    /* 6. SKILLS & AWARDS SECTION */
+    .skills-container {
+        padding: 0 20px;
+        gap: 50px !important;
+    }
+    .skills-cloud {
+        font-size: 1rem !important;
+        gap: 10px !important;
+    }
+    .awards-logos {
+        width: 90% !important;
+    }
+
+    /* 7. CONTACT SECTION (Fixing the layout so button is visible) */
+    .contact-flex-container {
+        flex-direction: column !important; /* Info Top, Form Bottom */
+        padding: 0 20px;
+        gap: 40px !important;
+    }
+    .contact-details-panel {
+        padding-left: 0 !important;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .contact-huge-title {
+        font-size: 2.5rem !important;
+        margin-bottom: 30px !important;
+    }
+    .contact-form-panel {
+        width: 100% !important;
+        padding: 25px 20px !important;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+    }
+    
+    /* Make submit button full width on mobile so it's clearly visible */
+    .submit-btn {
+        width: 100%;
+        padding: 15px !important;
+        font-size: 1rem !important;
+    }
+
+    /* 8. POPUP MODAL & INTERNAL PAGES */
+    .modal-content {
+        padding: 40px 25px !important;
+        max-width: 90% !important;
+    }
+    .modal-title {
+        font-size: 1.5rem !important;
+    }
+    .project-detail-container {
+        padding: 100px 15px 50px 15px !important;
+    }
+    
+    .browser-content img {
+        width: 100% !important;
+        height: auto !important;
+    }
+    .close-btn {
+        top: 20px !important;
+        right: 20px !important;
+        font-size: 0.7rem !important;
+        padding: 8px 15px !important;
+    }
+}

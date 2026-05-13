@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Vida - Biz499</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL SETUP --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #050505; /* Deep dark overlay feel */
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Main window scroll disabled */
+        }
+
+        /* --- 1. SLIDE UP ANIMATION --- */
+        @keyframes slideUpPopup {
+            0% {
+                transform: translateY(100vh) scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* --- 2. POPUP CARD STYLE (Margins ke sath) --- */
+        .modal-page-wrapper {
+            position: relative;
+            width: 92vw; 
+            height: 92vh; 
+            margin: 4vh auto; 
+            background-color: #121212; 
+            border-radius: 24px; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9); 
+            
+            overflow-y: auto; 
+            overflow-x: hidden;
+            
+            animation: slideUpPopup 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Custom Scrollbar */
+        .modal-page-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-page-wrapper::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* --- CLOSE BUTTON --- */
+        .close-btn {
+            position: absolute; 
+            top: 30px;
+            right: 40px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        /* --- MAIN CONTENT CONTAINER --- */
+        .project-detail-container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 100px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .project-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            margin: 0 0 30px 0;
+            font-weight: 600;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin-bottom: 80px;
+        }
+
+        /* --- IMAGES SETUP --- */
+        .browser-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; 
+        }
+
+        .browser-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- NOISE EFFECT --- */
+        .noise-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.08; 
+            mix-blend-mode: overlay;
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-page-wrapper">
+        
+        <div class="noise-overlay"></div>
+
+        <!-- Section 2 linked for La Vida -->
+        <a href="main.html#section-2" class="close-btn">CLOSE</a>
+
+        <main class="project-detail-container">
+            
+            <h1 class="project-title">La Vida</h1>
+            
+            <p class="project-description">
+                La Vida offers premium skincare through natural serums and luxurious creams. Along with products, La Vida promotes holistic wellness and skin education. La Vida needed a sophisticated digital storefront that seamlessly integrates its clinical expertise with a high-end shopping experience.
+            </p>
+
+            <div class="browser-content">
+                <img src="images/SUB_IMAGES/L0.png" alt="La Vida Home">
+                <img src="images/SUB_IMAGES/L1.png" alt="La Vida Products">
+                <img src="images/SUB_IMAGES/L2.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L3.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L4.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L5.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L6.png" alt="La Vida About">
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>

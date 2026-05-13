@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Vida - Biz499</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL SETUP --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            /* FAKE OVERLAY BACKGROUND: Ek deep dark background jisse depth feel ho */
+            background-color: #050505; 
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            /* Main body ka scroll band kar diya, taaki sirf card ke andar scroll ho */
+            overflow: hidden; 
+        }
+
+        /* --- 1. NEECHE SE UPAR AANE WALA ANIMATION --- */
+        @keyframes slideUpPopup {
+            0% {
+                transform: translateY(100vh) scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* --- 2. POPUP CARD STYLE (Margins ke sath) --- */
+        .modal-page-wrapper {
+            position: relative;
+            width: 92vw; /* Side se 4-4vw ki margin chhutegi */
+            height: 92vh; /* Upar-neeche se margin chhutegi */
+            margin: 4vh auto; /* Page ke center me laane ke liye */
+            background-color: #121212; /* Asli content ka background color */
+            border-radius: 24px; /* Premium curved borders */
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Halka sa glass border */
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9); /* Shadow se 'Floating' feel aayega */
+            
+            /* Card ke andar ka content scroll hoga */
+            overflow-y: auto; 
+            overflow-x: hidden;
+            
+            /* Animation apply kiya */
+            animation: slideUpPopup 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Custom Scrollbar for the popup */
+        .modal-page-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-page-wrapper::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* --- CLOSE BUTTON --- */
+        .close-btn {
+            position: absolute; /* Card ke andar absolute */
+            top: 30px;
+            right: 40px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        /* --- MAIN CONTENT CONTAINER --- */
+        .project-detail-container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 100px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .project-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            margin: 0 0 30px 0;
+            font-weight: 600;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin-bottom: 80px;
+        }
+
+        /* --- IMAGES SETUP --- */
+        .browser-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Images ke beech ka gap */
+        }
+
+        .browser-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- NOISE EFFECT (Card ke andar) --- */
+        .noise-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.08; 
+            mix-blend-mode: overlay;
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- YAHAN SE POPUP CARD SHURU HOTA HAI -->
+    <div class="modal-page-wrapper">
+        
+        <div class="noise-overlay"></div>
+        <div class="bg-watermark"></div>
+
+        <!-- Yahan aapke index.html file ka naam aayega jahan wapas jana hai -->
+        <a href="main.html#section-2" class="close-btn">CLOSE</a>
+
+        <main class="project-detail-container">
+            
+            <h1 class="project-title">Lavida</h1>
+            
+            <p class="project-description">
+                Lavida offers premium skincare through natural serums and luxurious creams. Along with products, Lavida promotes holistic wellness and skin education. Lavida needed a sophisticated digital storefront that seamlessly integrates its clinical expertise with a high-end shopping experience.
+            </p>
+
+            <div class="browser-content">
+                <img src="images/SUB_IMAGES/L0.png" alt="La Vida Home">
+                <img src="images/SUB_IMAGES/L1.png" alt="La Vida Products">
+                <img src="images/SUB_IMAGES/L2.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L3.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L4.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L5.png" alt="La Vida About">
+                <img src="images/SUB_IMAGES/L6.png" alt="La Vida About">
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
